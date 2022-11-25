@@ -9,6 +9,7 @@ WORKDIR /var/www
 # Install dependencies
 RUN apt-get update && pecl install redis && apt-get install -y  --no-install-recommends \
     libzip-dev \
+    zlib1g-dev \
     libonig-dev \
     libpq-dev \
     build-essential \
@@ -21,17 +22,17 @@ RUN apt-get update && pecl install redis && apt-get install -y  --no-install-rec
     vim \
     unzip \
     git \
-    curl
+    curl \
+    libxml2-dev
 
 # clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # install extensions
 # RUN docker-php-ext-install pdo pdo_pgsql zip exif pcntl
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql gd
 RUN docker-php-ext-enable pdo_mysql
 RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/
-RUN docker-php-ext-install gd
 RUN docker-php-ext-enable redis
 
 # Install composer

@@ -11,8 +11,6 @@ use App\Domain\User\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\UnauthorizedException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 final class AuthUser implements AuthUserInterface
 {
@@ -28,20 +26,19 @@ final class AuthUser implements AuthUserInterface
     {
         $credentials = compact('email', 'password');
         try {
-            if (! $token = JWTAuth::attempt($credentials)) {
+            if (! $token = Auth::attempt($credentials)) {
                 throw new UnauthorizedException('invalid_credentials');
             }
-        } catch (JWTException $e) {
+        } catch (Exception $e) {
             throw new UnauthorizedException('could_not_create_token');
         }
-        return $token;
+        return '';
     }
 
     public function loginUserModel(User $user): string
     {
         $user = $this->userRepositoryInterface->findByIdGetModel($user->id());
-        $token = JWTAuth::fromUser($user);
-        return $token;
+        return '';
     }
 
     public function getAuthUser(): \Illuminate\Contracts\Auth\Authenticatable
@@ -57,27 +54,17 @@ final class AuthUser implements AuthUserInterface
 
     public function logout(): void
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
+        
     }
 
     public function refresh(): string
     {
-        return JWTAuth::refresh();
+        return '';
     }
 
     public function getAuthenticatedUser(): \Illuminate\Contracts\Auth\Authenticatable
     {
-        try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
-                throw new Exception('user_not_found', 401);
-            }
-        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            throw new Exception('token_expired', 401);
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            throw new Exception('token_invalid', 401);
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            throw new Exception('token_absent', 401);
-        }
+        $user = Auth::user();
         return $user;
     }
 }
