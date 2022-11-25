@@ -45,6 +45,16 @@ final class Employee implements EmployeeInterface
         );
     }
 
+    public static function employeesFromCSV(string $path): array
+    {
+        $csv = array_map('str_getcsv', file($path));
+        array_walk($csv, function (&$a) use ($csv) {
+            $a = array_combine($csv[0], $a);
+        });
+        array_shift($csv); # remove column header
+        return $csv;
+    }
+
     public function id(): Id
     {
         return $this->id;

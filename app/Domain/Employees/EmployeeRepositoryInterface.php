@@ -13,6 +13,8 @@ interface EmployeeRepositoryInterface
 {
     public function create(Employee $employee): void;
 
+    public function createManyEmployees(array $employees): void;
+
     public function update(Employee $employee): void;
 
     /**

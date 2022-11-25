@@ -32,6 +32,11 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         $employeeModel->save();
     }
 
+    public function createManyEmployees(array $employees): void
+    {
+        ModelsEmployee::insert($employees);
+    }
+
     public function update(Employee $employee): void
     {
         $employeeModel = ModelsEmployee::find($employee->id()->value());

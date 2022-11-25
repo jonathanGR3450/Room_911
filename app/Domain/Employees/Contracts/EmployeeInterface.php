@@ -36,6 +36,7 @@ interface EmployeeInterface
     public function updateDepartment(string $department): void;
     public function updateHasAccess(bool $has_access): void;
     public function employeeLoginAttempt(): void;
+    public static function employeesFromCSV(string $path): array;
     public function asArray(): array;
 
 
