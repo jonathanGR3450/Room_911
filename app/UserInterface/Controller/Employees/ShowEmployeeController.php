@@ -1,19 +1,18 @@
 <?php
 
-namespace App\UserInterface\Controller\User;
+namespace App\UserInterface\Controller\Employees;
 
-use App\Application\User\ShowUserUseCase;
+use App\Application\Employees\ShowEmployeeUseCase;
 use App\Infrastructure\Laravel\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\JsonResponse;
 
-class ShowUserController extends Controller
+class ShowEmployeeController extends Controller
 {
-    private ShowUserUseCase $showUserUseCase;
+    private ShowEmployeeUseCase $showEmployeeUseCase;
 
-    public function __construct(ShowUserUseCase $showUserUseCase) {
-        $this->showUserUseCase = $showUserUseCase;
+    public function __construct(ShowEmployeeUseCase $showEmployeeUseCase) {
+        $this->showEmployeeUseCase = $showEmployeeUseCase;
     }
 
     /**
@@ -23,7 +22,7 @@ class ShowUserController extends Controller
      */
     public function __invoke(string $id): JsonResponse
     {
-        $user = $this->showUserUseCase->__invoke($id);
+        $user = $this->showEmployeeUseCase->__invoke($id);
 
         return Response::json([
             'data' => $user->asArray()

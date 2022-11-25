@@ -92,12 +92,12 @@ final class Employee implements EmployeeInterface
 
     public function updateFirstName(string $first_name): void
     {
-        $this->name = FirstName::fromString($first_name);
+        $this->first_name = FirstName::fromString($first_name);
     }
 
-    public function updateLastName(string $first_name): void
+    public function updateLastName(string $last_name): void
     {
-        $this->name = LastName::fromString($first_name);
+        $this->last_name = LastName::fromString($last_name);
     }
 
     public function employeeLoginAttempt(): void

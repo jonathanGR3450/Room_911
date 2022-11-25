@@ -25,6 +25,6 @@ class EmployeeAttempLogin
      */
     public function handle(EmployeeSession $event)
     {
-        // $event->user->sendEmailUserWasRegistered();
+        $event->employee->employeeLoginAttempt();
     }
 }

@@ -6,7 +6,9 @@ use App\Application\Auth\AuthUser;
 use App\Application\Auth\Contracts\AuthUserInterface;
 use App\Domain\Employees\Aggregate\Employee;
 use App\Domain\Employees\Contracts\EmployeeInterface;
+use App\Domain\Employees\EmployeeRepositoryInterface;
 use App\Domain\User\UserRepositoryInterface;
+use App\Infrastructure\Employees\EmployeeRepository;
 use App\Infrastructure\User\UserRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(AuthUserInterface::class, AuthUser::class);
         $this->app->bind(EmployeeInterface::class, Employee::class);
+        $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
     }
 
     /**

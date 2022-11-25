@@ -34,3 +34,11 @@ Route::put('users/{id}', 'User\UpdateUserController');
 Route::get('users/{id}', 'User\ShowUserController');
 Route::delete('users/{id}', 'User\DestroyUserController');
 Route::get('users', 'User\IndexUserController');
+
+
+# module employees
+Route::post('employees', 'Employees\CreateEmployeeController');
+Route::put('employees/{id}', 'Employees\UpdateEmployeeController');
+Route::get('employees/{id}', 'Employees\ShowEmployeeController');
+Route::delete('employees/{id}', 'Employees\DestroyEmployeeController');
+Route::get('employees', 'Employees\IndexEmployeeController');
