@@ -6,24 +6,23 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # image: digitalocean.com/php
-    container_name: app-ddd
+    container_name: app-room
     restart: unless-stopped
     tty: true
     environment:
-      SERVICE_NAME: app-ddd
+      SERVICE_NAME: app-room
       SERVICE_TAGS: dev
     working_dir: /var/www
     volumes:
       - ./:/var/www
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - ddd-network
+      - room-network
 
   #Nginx Service
   webserver:
     image: nginx:alpine
-    container_name: webserver-ddd
+    container_name: webserver-room
     restart: unless-stopped
     tty: true
     ports:
@@ -33,38 +32,32 @@ services:
       - ./:/var/www
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
-      - ddd-network
+      - room-network
 
+  #MySQL Service
   db:
-    image: postgres:12.8-alpine
-    container_name: db-ddd
+    image: mysql:5.7.22
+    container_name: db
     restart: unless-stopped
     tty: true
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ddd_laravel
+      MYSQL_DATABASE: room_911
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./data/dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
     networks:
-      - ddd-network
-
-  # redis:
-  #   image: redis:alpine
-  #   container_name: app-redis
-  #   command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
-  #   volumes:
-  #     - ./data/redis:/data
-  #   ports:
-  #     - "8002:6379"
-  #   networks:
-  #     - ddd-network
+      - room-network
 
 #Docker Networks
 networks:
-  ddd-network:
+  room-network:
     driver: bridge
 
 #Volumes

@@ -29,12 +29,8 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::post('user','Auth\AuthController@getAuthenticatedUser');
-Route::middleware(['jwt.verify'])->group(function ()
-{
-
-    Route::post('users', 'User\CreateUserController');
-    Route::put('users/{id}', 'User\UpdateUserController');
-    Route::get('users/{id}', 'User\ShowUserController');
-    Route::delete('users/{id}', 'User\DestroyUserController');
-    Route::get('users', 'User\IndexUserController');
-});
+Route::post('users', 'User\CreateUserController');
+Route::put('users/{id}', 'User\UpdateUserController');
+Route::get('users/{id}', 'User\ShowUserController');
+Route::delete('users/{id}', 'User\DestroyUserController');
+Route::get('users', 'User\IndexUserController');

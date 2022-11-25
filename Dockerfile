@@ -27,7 +27,9 @@ RUN apt-get update && pecl install redis && apt-get install -y  --no-install-rec
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # install extensions
-RUN docker-php-ext-install pdo pdo_pgsql zip exif pcntl
+# RUN docker-php-ext-install pdo pdo_pgsql zip exif pcntl
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-enable pdo_mysql
 RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/
 RUN docker-php-ext-install gd
 RUN docker-php-ext-enable redis

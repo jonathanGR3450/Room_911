@@ -2,10 +2,10 @@
 
 namespace App\Domain\User\EventListeners;
 
-use App\Domain\User\Events\UserRegistered;
+use App\Domain\Employees\Events\EmployeeSession;
 use Illuminate\Support\Facades\Mail;
 
-class UserRegisteredNotification
+class EmployeeAttempLogin
 {
     /**
      * Create the event listener.
@@ -20,11 +20,11 @@ class UserRegisteredNotification
     /**
      * Handle the event.
      *
-     * @param  \App\Events\UserRegistered  $event
+     * @param  \App\Domain\Employees\Events\EmployeeSession $event
      * @return void
      */
-    public function handle(UserRegistered $event)
+    public function handle(EmployeeSession $event)
     {
-        $event->user->sendEmailUserWasRegistered();
+        // $event->user->sendEmailUserWasRegistered();
     }
 }

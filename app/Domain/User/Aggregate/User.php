@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\User\Aggregate;
 
 use App\Domain\Shared\ValueObjects\DateTimeValueObject;
-use App\Domain\Shared\ValueObjects\StringValueObject;
 use App\Domain\User\ValueObjects\Email;
 use App\Domain\User\ValueObjects\Id;
+use App\Domain\User\ValueObjects\Name;
 use App\Domain\User\ValueObjects\Password;
 use Illuminate\Support\Facades\Mail;
 
@@ -16,7 +16,7 @@ final class User
     private function __construct(
         private Id $id,
         private Email $email,
-        private StringValueObject $name,
+        private Name $name,
         private Password $password,
         private DateTimeValueObject $created_at,
         private ?DateTimeValueObject $updated_at
@@ -26,7 +26,7 @@ final class User
     public static function create(
         Id $id,
         Email $email,
-        StringValueObject $name,
+        Name $name,
         Password $password,
         DateTimeValueObject $created_at,
         ?DateTimeValueObject $updated_at = null
@@ -51,12 +51,12 @@ final class User
         return $this->email;
     }
 
-    public function name(): StringValueObject
+    public function name(): Name
     {
         return $this->name;
     }
 
-    public function password(): StringValueObject
+    public function password(): Password
     {
         return $this->password;
     }
@@ -73,7 +73,7 @@ final class User
 
     public function updateName(string $name): void
     {
-        $this->name = StringValueObject::fromString($name);
+        $this->name = Name::fromString($name);
     }
 
     public function updateEmail(string $email): void
@@ -84,15 +84,6 @@ final class User
     public function updatePassword(string $password): void
     {
         $this->password = Password::fromString($password);
-    }
-
-    public function sendEmailUserWasRegistered(): void
-    {
-        Mail::send('emails.mail', $this->asArray(), function ($message) {
-            $message->to($this->email()->value())
-                    ->subject("Bienvenido a {$this->name()->value()}");
-            $message->from($this->email()->value());
-        });
     }
 
     public function asArray(): array

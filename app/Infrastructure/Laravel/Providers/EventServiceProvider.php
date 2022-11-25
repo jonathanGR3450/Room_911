@@ -2,8 +2,6 @@
 
 namespace App\Infrastructure\Laravel\Providers;
 
-use App\Domain\User\EventListeners\UserRegisteredNotification;
-use App\Domain\User\Events\UserRegistered;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,9 +18,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        UserRegistered::class => [
-            UserRegisteredNotification::class
-        ]
+        // UserRegistered::class => [
+        //     UserRegisteredNotification::class
+        // ]
     ];
 
     /**

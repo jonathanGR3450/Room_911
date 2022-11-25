@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Domain\User\Events;
+namespace App\Domain\Employees\Events;
 
-use App\Domain\User\Aggregate\User;
+use App\Domain\Employees\Contracts\EmployeeInterface;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserRegistered
+class EmployeeSession
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public User $user;
+    public EmployeeInterface $employee;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(EmployeeInterface $employee)
     {
-        $this->user = $user;
+        $this->employee = $employee;
     }
 
     /**
