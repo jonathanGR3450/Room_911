@@ -37,6 +37,7 @@ Route::get('users', 'User\IndexUserController');
 
 
 # module employees
+Route::get('employeesreport', 'Employees\PDFReportEmployeesController');
 Route::post('employeescsv', 'Employees\CreateEmployeesFromCSVController');
 Route::post('employees', 'Employees\CreateEmployeeController');
 Route::put('employees/{id}', 'Employees\UpdateEmployeeController');

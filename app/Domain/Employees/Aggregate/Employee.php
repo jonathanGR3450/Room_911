@@ -11,6 +11,7 @@ use App\Domain\Employees\ValueObjects\HasAccess;
 use App\Domain\Employees\ValueObjects\Id;
 use App\Domain\Employees\ValueObjects\LastName;
 use App\Domain\Shared\ValueObjects\DateTimeValueObject;
+use PDF;
 
 final class Employee implements EmployeeInterface
 {
@@ -53,6 +54,12 @@ final class Employee implements EmployeeInterface
         });
         array_shift($csv); # remove column header
         return $csv;
+    }
+
+    public static function pdfEmployees(array $employees): \Barryvdh\DomPDF\PDF
+    {
+        $pdf = PDF::loadView('pdf.downloadReport', compact('employees'));
+        return $pdf;
     }
 
     public function id(): Id

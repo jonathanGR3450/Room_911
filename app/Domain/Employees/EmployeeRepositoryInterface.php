@@ -31,5 +31,7 @@ interface EmployeeRepositoryInterface
 
     public function searchByCriteria(EmployeeSearchCriteria $criteria): array;
 
+    public function getAllEmployees(): array;
+
     public function delete(Employee $employee): void;
 }

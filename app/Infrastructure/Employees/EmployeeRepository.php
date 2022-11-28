@@ -107,6 +107,15 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         );
     }
 
+    public function getAllEmployees(): array
+    {
+        $employeeModel = new ModelsEmployee();
+        return array_map(
+            static fn (ModelsEmployee $employee) => self::map($employee),
+            $employeeModel->get()->all()
+        );
+    }
+
     public function delete(Employee $employee): void
     {
         $employeeModel = ModelsEmployee::find($employee->id()->value());
