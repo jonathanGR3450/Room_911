@@ -19,15 +19,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-# auth routes
-Route::controller(AuthController::class)->group(function () {
-    Route::post('login', 'login');
-    Route::post('register', 'register');
-    Route::post('logout', 'logout');
-    Route::post('refresh', 'refresh');
-
-});
-
 Route::post('user','Auth\AuthController@getAuthenticatedUser');
 Route::post('users', 'User\CreateUserController');
 Route::put('users/{id}', 'User\UpdateUserController');

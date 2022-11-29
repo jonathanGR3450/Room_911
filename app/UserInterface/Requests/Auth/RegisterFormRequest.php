@@ -2,10 +2,21 @@
 
 namespace App\UserInterface\Requests\Auth;
 
-use App\UserInterface\Requests\CustomFormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterFormRequest extends CustomFormRequest
+class RegisterFormRequest extends FormRequest
 {
+
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,7 +27,7 @@ class RegisterFormRequest extends CustomFormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
         ];
     }
 }

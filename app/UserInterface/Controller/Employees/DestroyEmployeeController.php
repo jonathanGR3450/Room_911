@@ -22,10 +22,10 @@ class DestroyEmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(string $id): JsonResponse
+    public function __invoke(string $id)
     {
         $this->destroyEmployeeUseCase->__invoke($id);
 
-        return Response::json([], JsonResponse::HTTP_NO_CONTENT);
+        return redirect()->route('employees.index')->with('status', 'Employee deleted success!');
     }
 }

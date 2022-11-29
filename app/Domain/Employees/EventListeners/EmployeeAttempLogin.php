@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Domain\User\EventListeners;
+namespace App\Domain\Employees\EventListeners;
 
 use App\Domain\Employees\Events\EmployeeSession;
-use Illuminate\Support\Facades\Mail;
 
 class EmployeeAttempLogin
 {
@@ -25,6 +24,6 @@ class EmployeeAttempLogin
      */
     public function handle(EmployeeSession $event)
     {
-        $event->employee->employeeLoginAttempt();
+        $event->historyRepositoryInterface->create($event->history);
     }
 }

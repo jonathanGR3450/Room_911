@@ -8,6 +8,7 @@ use App\Domain\Employees\Aggregate\Employee;
 use App\Domain\Employees\EmployeeRepositoryInterface;
 use App\Domain\Employees\EmployeeSearchCriteria;
 use App\Domain\Employees\Exception\EmployeeNotFoundException;
+use App\Domain\Employees\ValueObjects\Attempts;
 use App\Domain\Employees\ValueObjects\Department;
 use App\Domain\Employees\ValueObjects\FirstName;
 use App\Domain\Employees\ValueObjects\HasAccess;
@@ -15,6 +16,7 @@ use App\Domain\Employees\ValueObjects\Id;
 use App\Domain\Employees\ValueObjects\LastName;
 use App\Domain\Shared\ValueObjects\DateTimeValueObject;
 use App\Infrastructure\Laravel\Models\Employee as ModelsEmployee;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeRepository implements EmployeeRepositoryInterface
 {
@@ -84,12 +86,32 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     {
         $employeeModel = new ModelsEmployee();
 
+        if (!empty($criteria->id())) {
+            $employeeModel = $employeeModel->where('employees.id', 'LIKE', "%" . $criteria->id() . "%");
+        }
+
         if (!empty($criteria->firstName())) {
-            $employeeModel = $employeeModel->where('first_name', 'ILIKE', "%" . $criteria->firstName() . "%");
+            $employeeModel = $employeeModel->where('employees.first_name', 'LIKE', "%" . $criteria->firstName() . "%");
         }
 
         if (!empty($criteria->lastName())) {
-            $employeeModel = $employeeModel->where('last_name', 'ILIKE', "%" . $criteria->lastName() . "%");
+            $employeeModel = $employeeModel->where('employees.last_name', 'LIKE', "%" . $criteria->lastName() . "%");
+        }
+
+        if (!empty($criteria->department())) {
+            $employeeModel = $employeeModel->where('employees.department', 'LIKE', "%" . $criteria->department() . "%");
+        }
+
+        if ($criteria->hasAccess() == '1' || $criteria->hasAccess() == '0') {
+            $employeeModel = $employeeModel->where('employees.has_access', $criteria->hasAccess());
+        }
+
+        if (!empty($criteria->dateInit())) {
+            $employeeModel = $employeeModel->whereDate('attempts_employed.created_at', '>=', $criteria->dateInit());
+        }
+
+        if (!empty($criteria->dateEnd())) {
+            $employeeModel = $employeeModel->whereDate('attempts_employed.created_at', '<=', $criteria->dateEnd());
         }
 
         if ($criteria->pagination() !== null) {
@@ -100,6 +122,12 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         if ($criteria->sort() !== null) {
             $employeeModel = $employeeModel->orderBy($criteria->sort()->field()->value(), $criteria->sort()->direction()->value());
         }
+
+        $employeeModel = $employeeModel->leftJoin('attempts_employed', 'attempts_employed.employee_id', 'employees.id')
+            ->select('employees.*', DB::raw('COUNT(attempts_employed.id) as attempts'))
+            ->groupBy('employees.id');
+        
+            // dd($employeeModel->toSql());
 
         return array_map(
             static fn (ModelsEmployee $employee) => self::map($employee),
@@ -133,6 +161,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
             HasAccess::fromBoolean((bool)$model->has_access),
             DateTimeValueObject::fromPrimitives($model->created_at->__toString()),
             !empty($model->updated_at) ? DateTimeValueObject::fromPrimitives($model->updated_at->__toString()) : null,
+            Attempts::fromInteger($model->attempts ?? 0),
         );
     }
 }

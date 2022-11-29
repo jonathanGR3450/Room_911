@@ -6,7 +6,7 @@ use App\Domain\User\Aggregate\User;
 
 interface AuthUserInterface
 {
-    public function loginCredentials(string $email, string $password): string;
+    public function loginCredentials(string $email, string $password): bool;
 
     public function loginUserModel(User $user): string;
 
@@ -14,9 +14,5 @@ interface AuthUserInterface
 
     public function logout(): void;
 
-    public function refresh(): string;
-
-    public function getAuthUser(): \Illuminate\Contracts\Auth\Authenticatable;
-
-    public function getAuthenticatedUser(): \Illuminate\Contracts\Auth\Authenticatable;
+    public function check(): bool;
 }

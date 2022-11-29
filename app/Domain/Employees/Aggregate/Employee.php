@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Domain\Employees\Aggregate;
 
 use App\Domain\Employees\Contracts\EmployeeInterface;
+use App\Domain\Employees\ValueObjects\Attempts;
 use App\Domain\Employees\ValueObjects\Department;
 use App\Domain\Employees\ValueObjects\FirstName;
 use App\Domain\Employees\ValueObjects\HasAccess;
 use App\Domain\Employees\ValueObjects\Id;
 use App\Domain\Employees\ValueObjects\LastName;
 use App\Domain\Shared\ValueObjects\DateTimeValueObject;
+use App\UserInterface\Presenter\Employees\EmployeePresenter;
 use PDF;
 
 final class Employee implements EmployeeInterface
@@ -22,7 +24,8 @@ final class Employee implements EmployeeInterface
         private Department $department,
         private HasAccess $has_access,
         private DateTimeValueObject $created_at,
-        private ?DateTimeValueObject $updated_at
+        private ?DateTimeValueObject $updated_at,
+        private ?Attempts $attempts,
     ) {
     }
 
@@ -33,7 +36,8 @@ final class Employee implements EmployeeInterface
         Department $department,
         HasAccess $has_access,
         DateTimeValueObject $created_at,
-        ?DateTimeValueObject $updated_at = null
+        ?DateTimeValueObject $updated_at = null,
+        ?Attempts $attempts = null
     ): self {
         return new self(
             $id,
@@ -42,7 +46,8 @@ final class Employee implements EmployeeInterface
             $department,
             $has_access,
             $created_at,
-            $updated_at
+            $updated_at,
+            $attempts
         );
     }
 
@@ -54,6 +59,14 @@ final class Employee implements EmployeeInterface
         });
         array_shift($csv); # remove column header
         return $csv;
+    }
+
+    public static function attempt(?Employee $employee = null): bool
+    {
+        if (!$employee) {
+            return false;
+        }
+        return true;
     }
 
     public static function pdfEmployees(array $employees): \Barryvdh\DomPDF\PDF
@@ -107,6 +120,11 @@ final class Employee implements EmployeeInterface
         return $this->updated_at;
     }
 
+    public function attempts(): ?Attempts
+    {
+        return $this->attempts;
+    }
+
     public function updateFirstName(string $first_name): void
     {
         $this->first_name = FirstName::fromString($first_name);
@@ -122,6 +140,11 @@ final class Employee implements EmployeeInterface
         // register attempt login employee
     }
 
+    public function present(): EmployeePresenter
+    {
+        return new EmployeePresenter($this);
+    }
+
     public function asArray(): array
     {
         return [
@@ -131,7 +154,8 @@ final class Employee implements EmployeeInterface
             'department' => $this->department()->value(),
             'has_access' => $this->hasAccess()->value(),
             'created_at' => $this->createdAt()->value(),
-            'updated_at' => $this->updatedAt()?->value()
+            'updated_at' => $this->updatedAt()?->value(),
+            'attemps' => $this->attempts()?->value(),
         ];
     }
 }

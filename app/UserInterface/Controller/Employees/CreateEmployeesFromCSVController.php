@@ -27,8 +27,6 @@ class CreateEmployeesFromCSVController extends Controller
 
         $this->createEmployeesFromCSVUseCase->__invoke($path);
 
-        return Response::json([
-            'data' => 'success'
-        ], JsonResponse::HTTP_CREATED);
+        return redirect()->route('employees.index')->with('status', "Employees was upload successfull!");
     }
 }

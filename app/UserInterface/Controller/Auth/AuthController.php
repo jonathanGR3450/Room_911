@@ -5,86 +5,57 @@ namespace App\UserInterface\Controller\Auth;
 use App\Application\Auth\Contracts\AuthUserInterface;
 use App\Infrastructure\Laravel\Controller;
 use App\UserInterface\Requests\Auth\LoginFormRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\UnauthorizedException;
+use App\UserInterface\Requests\Auth\RegisterFormRequest;
 
 class AuthController extends Controller
 {
     private AuthUserInterface $authUserInterface;
     public function __construct(AuthUserInterface $authUserInterface)
     {
-        $this->middleware('jwt.verify', ['except' => ['login','register']]);
+        $this->middleware('auth', ['except' => ['loginPost','registration', 'registrationPost', 'index']]);
         $this->authUserInterface = $authUserInterface;
     }
 
-    public function login(LoginFormRequest $request)
+    public function index()
     {
-        try {
-            $token = $this->authUserInterface->loginCredentials($request->input('email'), $request->input('password'));
-            $user = $this->authUserInterface->getAuthUser();
-            return response()->json([
-                'status' => 'success',
-                'user' => $user,
-                'authorization' => [
-                    'token' => $token,
-                    'type' => 'bearer',
-                ]
-            ], 200);
-        } catch (UnauthorizedException $th) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+        return view('auth.login');
     }
 
+    public function loginPost(LoginFormRequest $request)
+    {
+        $login = $this->authUserInterface->loginCredentials($request->input('email'), $request->input('password'));
+        if (!$login) {
+            return redirect("login")->with('status', 'Oppes! You have entered invalid credentials');
+        }
 
-    public function register(Request $request)
+        return redirect()->intended('dashboard')
+                    ->with('status', 'You have Successfully loggedin');
+    }
+
+    public function registration()
+    {
+        return view('auth.registration');
+    }
+
+    public function registrationPost(RegisterFormRequest $request)
     {
         $user = $this->authUserInterface->createUser($request->input('name'), $request->input('email'), $request->input('password'));
-        $token = $this->authUserInterface->loginUserModel($user);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User created successfully',
-            'user' => $user->asArray(),
-            'authorization' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
-        ]);
+        return redirect("login")->with('status', 'You have signed-in');
     }
 
     public function logout()
     {
         $this->authUserInterface->logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ]);
+        return Redirect('login');
     }
 
-    public function getAuthenticatedUser()
+    public function dashboard()
     {
-        $user = $this->authUserInterface->getAuthUser();
-        return response()->json(compact('user'));
-    }
-
-    public function refresh()
-    {
-        return response()->json([
-            'status' => 'success',
-            'user' => $this->authUserInterface->getAuthenticatedUser(),
-            'authorization' => [
-                'token' => $this->authUserInterface->refresh(),
-                'type' => 'bearer',
-            ]
-        ]);
+        if($this->authUserInterface->check()){
+            return redirect()->route('employees.index')->with('status', 'You have signed-in');
+        }
+  
+        return redirect("login")->with('status', 'You are not allowed to access');
     }
 }

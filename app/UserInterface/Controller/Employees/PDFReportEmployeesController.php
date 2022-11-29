@@ -22,7 +22,16 @@ class PDFReportEmployeesController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $pdf = $this->pdfEmployeesUseCase->__invoke();
+        $pdf = $this->pdfEmployeesUseCase->__invoke(
+            (int) $request->query('offset'),
+            $request->query('first_name'),
+            $request->query('last_name'),
+            $request->query('department'),
+            $request->query('has_access'),
+            $request->query('date_init'),
+            $request->query('date_end'),
+            $request->query('id'),
+        );
         return $pdf->download('pdf_file.pdf');
     }
 }

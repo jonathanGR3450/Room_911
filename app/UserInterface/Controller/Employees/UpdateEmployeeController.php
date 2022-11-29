@@ -23,10 +23,8 @@ class UpdateEmployeeController extends Controller
      */
     public function __invoke(Request $request, string $id)
     {
-        $user = $this->updateEmployeeUseCase->__invoke($request->input('first_name'), $request->input('last_name'), $request->input('department'), (bool) $request->input('has_access'), $id);
+        $this->updateEmployeeUseCase->__invoke($request->input('first_name'), $request->input('last_name'), $request->input('department'), (bool) $request->input('has_access'), $id);
 
-        return Response::json([
-            'data' => $user->asArray()
-        ], JsonResponse::HTTP_OK);
+        return redirect()->route('employees.index')->with('status', 'Employee updated success!');
     }
 }

@@ -10,6 +10,7 @@ use App\Domain\User\Aggregate\User;
 use App\Domain\User\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\UnauthorizedException;
 
 final class AuthUser implements AuthUserInterface
@@ -22,28 +23,19 @@ final class AuthUser implements AuthUserInterface
         $this->createUserUseCase = $createUserUseCase;
     }
     
-    public function loginCredentials(string $email, string $password): string
+    public function loginCredentials(string $email, string $password): bool
     {
         $credentials = compact('email', 'password');
-        try {
-            if (! $token = Auth::attempt($credentials)) {
-                throw new UnauthorizedException('invalid_credentials');
-            }
-        } catch (Exception $e) {
-            throw new UnauthorizedException('could_not_create_token');
+        if (Auth::attempt($credentials)) {
+            return true;
         }
-        return '';
+        return false;
     }
 
     public function loginUserModel(User $user): string
     {
         $user = $this->userRepositoryInterface->findByIdGetModel($user->id());
         return '';
-    }
-
-    public function getAuthUser(): \Illuminate\Contracts\Auth\Authenticatable
-    {
-        return Auth::user();
     }
 
     public function createUser(string $name, string $email, string $password): User
@@ -54,17 +46,12 @@ final class AuthUser implements AuthUserInterface
 
     public function logout(): void
     {
-        
+        Session::flush();
+        Auth::logout();
     }
 
-    public function refresh(): string
+    public function check(): bool
     {
-        return '';
-    }
-
-    public function getAuthenticatedUser(): \Illuminate\Contracts\Auth\Authenticatable
-    {
-        $user = Auth::user();
-        return $user;
+        return Auth::check();
     }
 }

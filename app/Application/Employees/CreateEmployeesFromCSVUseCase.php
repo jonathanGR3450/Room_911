@@ -18,6 +18,7 @@ final class CreateEmployeesFromCSVUseCase
     public function __invoke(string $path): void
     {
         $employees = Employee::employeesFromCSV($path);
+        // dd($employees);
 
         $this->employeeRepositoryInterface->createManyEmployees($employees);
     }

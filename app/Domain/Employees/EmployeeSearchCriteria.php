@@ -17,8 +17,9 @@ final class EmployeeSearchCriteria extends Criteria
     private ?string $date_end = null;
     private ?string $department = null;
     private ?bool $has_access = null;
+    private ?string $id = null;
 
-    public static function create(?int $offset = null, ?string $first_name = null, ?string $last_name = null, ?string $department, ?bool $has_access, ?string $date_init, ?string $date_end): EmployeeSearchCriteria
+    public static function create(?int $offset = null, ?string $first_name = null, ?string $last_name = null, ?string $department, ?bool $has_access, ?string $date_init, ?string $date_end, ?string $id): EmployeeSearchCriteria
     {
         $criteria = new self(
             CriteriaPagination::create(self::PAGINATION_SIZE, $offset)
@@ -26,6 +27,10 @@ final class EmployeeSearchCriteria extends Criteria
 
         if (!empty($first_name)) {
             $criteria->first_name = $first_name;
+        }
+
+        if (!empty($id)) {
+            $criteria->id = $id;
         }
 
         if (!empty($last_name)) {
@@ -44,11 +49,16 @@ final class EmployeeSearchCriteria extends Criteria
             $criteria->department = $department;
         }
 
-        if (!empty($has_access)) {
+        if (!is_null($has_access)) {
             $criteria->has_access = $has_access;
         }
 
         return $criteria;
+    }
+
+    public function id(): ?string
+    {
+        return $this->id;
     }
 
     public function firstName(): ?string

@@ -23,18 +23,26 @@ class IndexEmployeeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $users = $this->indexEmployeeUseCase->__invoke(
-            (int) $request->query('offset'),
-            $request->query('first_name'),
-            $request->query('last_name'),
-            $request->query('department'),
-            $request->query('has_access'),
-            $request->query('date_init'),
-            $request->query('date_end'),
+        $offset = (int) $request->query('offset');
+        $first_name = $request->query('first_name');
+        $last_name = $request->query('last_name');
+        $department = $request->query('department');
+        $has_access = $request->query('has_access');
+        $date_init = $request->query('date_init');
+        $date_end = $request->query('date_end');
+        $id = $request->query('id');
+
+        $employees = $this->indexEmployeeUseCase->__invoke(
+            $offset,
+            $first_name,
+            $last_name,
+            $department,
+            $has_access,
+            $date_init,
+            $date_end,
+            $id,
         );
 
-        return Response::json([
-            'data' => $users
-        ], JsonResponse::HTTP_OK);
+        return view('dashboard', compact('employees', 'first_name', 'last_name', 'department', 'has_access', 'date_init', 'date_end', 'id'));
     }
 }

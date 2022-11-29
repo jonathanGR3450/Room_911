@@ -2,7 +2,8 @@
 
 namespace App\Domain\Employees\Events;
 
-use App\Domain\Employees\Contracts\EmployeeInterface;
+use App\Domain\Employees\Aggregate\History;
+use App\Domain\Employees\HistoryRepositoryInterface;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -12,16 +13,18 @@ class EmployeeSession
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public EmployeeInterface $employee;
+    public History $history;
+    public HistoryRepositoryInterface $historyRepositoryInterface;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(EmployeeInterface $employee)
+    public function __construct(History $history, HistoryRepositoryInterface $historyRepositoryInterface)
     {
-        $this->employee = $employee;
+        $this->history = $history;
+        $this->historyRepositoryInterface = $historyRepositoryInterface;
     }
 
     /**

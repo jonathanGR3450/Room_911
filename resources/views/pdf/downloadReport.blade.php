@@ -10,25 +10,25 @@
 </head>
 
 <body>
-    <div class="container mt-2">
-        <table class="table table-bordered mb-2">
+    <div class="">
+        <table class="table table-bordered">
             <thead>
                 <tr class="table-danger">
-                    <th scope="col">id</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
+                    <th scope="col">Employee ID</th>
+                    <th scope="col">Firstname</th>
+                    <th scope="col">Lastname</th>
                     <th scope="col">Department</th>
-                    <th scope="col">Has Access</th>
+                    <th scope="col">Total access</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($employees ?? '' as $data)
                     <tr>
-                        <th scope="row">{{ $data->id()->value() }}</th>
-                        <td>{{ $data->firstName()->value() }}</td>
-                        <td>{{ $data->lastName()->value() }}</td>
-                        <td>{{ $data->department()->value() }}</td>
-                        <td>{{ $data->hasAccess()->value() }}</td>
+                        <td>{{ $data->present()->getId() }}</td>
+                        <td>{{ $data->present()->getFirstName() }}</td>
+                        <td>{{ $data->present()->getLastName() }}</td>
+                        <td>{{ $data->present()->getDepartment() }}</td>
+                        <td>{{ $data->present()->getAttempts() }}</td>
                     </tr>
                 @endforeach
             </tbody>

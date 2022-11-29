@@ -20,12 +20,9 @@ class ShowEmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(string $id): JsonResponse
+    public function __invoke(string $id): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory
     {
-        $user = $this->showEmployeeUseCase->__invoke($id);
-
-        return Response::json([
-            'data' => $user->asArray()
-        ], JsonResponse::HTTP_OK);
+        $employee = $this->showEmployeeUseCase->__invoke($id);
+        return view('employees.edit', compact('employee'));
     }
 }

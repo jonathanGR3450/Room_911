@@ -19,12 +19,12 @@ final class IndexEmployeeUseCase
         $this->employeeRepositoryInterface = $employeeRepositoryInterface;
     }
 
-    public function __invoke(?int $offset = null, ?string $first_name = null, ?string $last_name = null, ?string $department = null, ?bool $has_access = null, ?string $date_init = null, ?string $date_end = null): array
+    public function __invoke(?int $offset = null, ?string $first_name = null, ?string $last_name = null, ?string $department = null, ?bool $has_access = null, ?string $date_init = null, ?string $date_end = null, ?string $id = null): array
     {
-        $criteria = EmployeeSearchCriteria::create($offset, $first_name, $last_name, $department, $has_access, $date_init, $date_end);
+        $criteria = EmployeeSearchCriteria::create($offset, $first_name, $last_name, $department, $has_access, $date_init, $date_end, $id);
         $criteria->sortBy(new CriteriaSort(CriteriaField::fromString('first_name'), CriteriaSortDirection::ASC));
         $users = $this->employeeRepositoryInterface->searchByCriteria($criteria);
 
-        return array_map(fn (EmployeeInterface $user) => $user->asArray(), $users);
+        return array_map(fn (EmployeeInterface $user) => $user, $users);
     }
 }

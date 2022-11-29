@@ -12,7 +12,7 @@ class Password extends StringValueObject
 {
     public function __construct(string $value)
     {
-        $this->guard($value);
+        // $this->guard($value);
         $this->value = $value;
     }
 
