@@ -21,7 +21,8 @@ final class PDFEmployeesUseCase
     public function __invoke(?int $offset = null, ?string $first_name = null, ?string $last_name = null, ?string $department = null, ?bool $has_access = null, ?string $date_init = null, ?string $date_end = null, ?string $id = null): \Barryvdh\DomPDF\PDF
     {
 
-        $employees = $this->indexEmployeeUseCase->__invoke(
+        # para llamar el metodo invoke, es necesario llamarlo desde parentesis
+        $employees = ($this->indexEmployeeUseCase)(
             $offset,
             $first_name,
             $last_name,
